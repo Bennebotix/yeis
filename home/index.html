@@ -19,8 +19,15 @@
         </script>
         <script>
             $('body').terminal({
-                'guessem': function() {
-                    window.location = 'https://mega-bitz.netlify.app/guessem'
+                '$app': function(what1, what2) {
+                    if (what1 == 'open') {
+                        if (what2 == 'guessem') {
+                            window.location = 'https://mega-bitz.netlify.app/guessem'
+                        }
+                        if (what2 == 'chat') {
+                            window.location = 'https://mega-bitz.netlify.app/chat'
+                        }
+                    }
                 },
                 '$sudo': function(what1, what2) {
                     if (what1 == 'name') {
