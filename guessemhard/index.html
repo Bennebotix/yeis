@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script src="https://unpkg.com/jquery.terminal/js/jquery.terminal.min.js"></script>
+        <link rel="stylesheet" href="https://unpkg.com/jquery.terminal/css/jquery.terminal.min.css"/>
+        <title>Mega Bitz|Guess'em</title>
+    </head>
+    <body>
+        <script>
+            var num = (Math.random() * 100).toFixed(0)
+            var pn = 1
+            var tries = 0
+            var oot = 'try'
+            var close = 0
+        </script>
+        <script>
+            $('body').terminal({
+                'home': function() {
+                    window.location = 'mega-bitz.netlify.app'
+                },
+                'tryagain': function() {
+                    window.location = window.location
+                },
+                '?': function(what) {
+                    tries += 1
+                    if (what == num) {
+                        this.echo('> You Win!')
+                        if (tries > 1) {
+                            oot = 'tries'
+                        }
+                        this.echo('> That took you ' + tries + ' ' + oot + '.')
+                    } else {
+                        if (Math.random() <= 0.5) {
+                            pn = -1
+                        } else {
+                            pn = 1
+                        }
+                        this.echo('> Wrong! Guess Again')
+                        close = Number(((Math.random() * 10).toFixed(0) * pn)) + Number(num)
+                        if (close == num) {
+                            close += 1
+                        }
+                        this.echo('> The number is close To ' + close)
+                    }
+                }
+            }, {
+                greetings: '> Welcome to Guess\'em\n> Instructions:\n> Type: \"?{space}{number 1-100}\"\n> Then if the number is correct\n> your device will say: \"You Win!\".\n> If it is wrong your device\n> will say: \"Wrong! Guess Again\"\n> If you win type: \"tryagain\" to\n> try again.\n>'
+            })
+        </script>
+    </body>
+</html>
