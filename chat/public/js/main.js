@@ -12,7 +12,7 @@ var messages = document.getElementById("messages");
   $("form").submit(function(e) {
     let li = document.createElement("li");
     e.preventDefault(); // prevents page reloading
-    socket.emit("chat message", username + ': ' + $("#message").val());
+    socket.broadcast.emit("chat message", username + ': ' + $("#message").val());
 
     messages.appendChild(li).append("You: " + $("#message").val());
     let span = document.createElement("span");
