@@ -11,6 +11,11 @@
     </head>
     <body id='body'>
         <script>
+            if (loading == false) {
+                window.location.pathname = '/load'
+            }
+        </script>
+        <script>
             var params = {
                 name: '',
                 user: '',
