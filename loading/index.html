@@ -44,6 +44,9 @@
           box2.scaling.y = Math.abs(Math.cos(t));
           box2.scaling.z = Math.abs(Math.sin(t));
       };
+      canvas.addEventListener("click", function(){
+        window.location.pathname = ''
+      });
       engine.runRenderLoop(renderLoop);
     </script>
   </body>
