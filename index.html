@@ -11,40 +11,44 @@
     <script src="babylon.js"></script>    
     <canvas id="render-canvas"></canvas>
     <script>
-        var canvas = document.getElementById("render-canvas");
-        var engine = new BABYLON.Engine(canvas);
-        var scene = new BABYLON.Scene(engine);
-        scene.clearColor = new BABYLON.Color3(0.8, 0.8, 0.8);
-        var camera = new BABYLON.FreeCamera("camera", new BABYLON.Vector3(0, 0, -10), scene);
-        var light = new BABYLON.PointLight("light", new BABYLON.Vector3(5, 5, 0), scene);
+      var canvas = document.getElementById("render-canvas");
+      var engine = new BABYLON.Engine(canvas);
+      var scene = new BABYLON.Scene(engine);
+      scene.clearColor = new BABYLON.Color3(0.8, 0.8, 0.8);
+      var camera = new BABYLON.FreeCamera("camera", new BABYLON.Vector3(0, 0, -10), scene);
+      var light = new BABYLON.PointLight("light", new BABYLON.Vector3(5, 5, 0), scene);
 
-        var box1 = BABYLON.Mesh.CreateBox("box", 2, scene);
-        box1.rotation.x = -0.1;
-        box1.rotation.y = -0.2;
-        var box2 = BABYLON.Mesh.CreateBox("box", 2, scene);
-        box2.rotation.x = -0.1;
-        box2.rotation.y = -0.2;
+      var box1 = BABYLON.Mesh.CreateBox("box", 2, scene);
+      box1.rotation.x = -0.1;
+      box1.rotation.y = -0.2;
+      var box2 = BABYLON.Mesh.CreateBox("box", 2, scene);
+      box2.rotation.x = -0.1;
+      box2.rotation.y = -0.2;
 
-        var boxMaterial = new BABYLON.StandardMaterial("material", scene);
-        boxMaterial.emissiveColor = new BABYLON.Color3(0, 0.58, 0.86);
-        box1.material = boxMaterial;
-        box2.material = boxMaterial
-        var t = 0
-        var renderLoop = function () {
-            scene.render();
-            t -= 0.01;
-            box1.rotation.y = t*2;
-            box1.rotation.x = t*2;
-            box1.scaling.x = Math.abs(Math.cos(t));
-            box1.scaling.y = Math.abs(Math.sin(t));
-            box1.scaling.z = Math.abs(Math.cos(t));
-            box2.rotation.y = t*-2;
-            box2.rotation.x = t*-2;
-            box2.scaling.x = Math.abs(Math.sin(t));
-            box2.scaling.y = Math.abs(Math.cos(t));
-            box2.scaling.z = Math.abs(Math.sin(t));
-        };
-        engine.runRenderLoop(renderLoop);
+      var boxMaterial = new BABYLON.StandardMaterial("material", scene);
+      boxMaterial.emissiveColor = new BABYLON.Color3(0, 0.58, 0.86);
+      box1.material = boxMaterial;
+      box2.material = boxMaterial
+      var t = 0
+      var redirect = function () {
+        window.location.pathname = '/home'
+      };
+      var renderLoop = function () {
+          scene.render();
+          t -= 0.01;
+          box1.rotation.y = t*2;
+          box1.rotation.x = t*2;
+          box1.scaling.x = Math.abs(Math.cos(t));
+          box1.scaling.y = Math.abs(Math.sin(t));
+          box1.scaling.z = Math.abs(Math.cos(t));
+          box2.rotation.y = t*-2;
+          box2.rotation.x = t*-2;
+          box2.scaling.x = Math.abs(Math.sin(t));
+          box2.scaling.y = Math.abs(Math.cos(t));
+          box2.scaling.z = Math.abs(Math.sin(t));
+      };
+      setTimeout(redirect, 1000);
+      engine.runRenderLoop(renderLoop);
     </script>
   </body>
 </html>
