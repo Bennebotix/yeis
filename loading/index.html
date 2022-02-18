@@ -16,7 +16,8 @@
       var scene = new BABYLON.Scene(engine);
       scene.clearColor = new BABYLON.Color3(0, 0, 0);
 //       var camera = new BABYLON.FreeCamera("camera", new BABYLON.Vector3(0, 0, -10), scene);
-      var camera = new BABYLON.VirtualJoysticksCamera("VJ_camera", new BABYLON.Vector3(0, 0, -10), scene);
+//       var camera = new BABYLON.VirtualJoysticksCamera("VJ_camera", new BABYLON.Vector3(0, 0, -10), scene);
+      var camera = new BABYLON.AnaglyphFreeCamera("af_cam", new BABYLON.Vector3(0, 1, -15), 0.033, scene);
       var light = new BABYLON.PointLight("light", new BABYLON.Vector3(5, 5, 0), scene);
 
       var box1 = BABYLON.Mesh.CreateBox("box", 2, scene);
