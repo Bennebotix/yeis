@@ -47,7 +47,7 @@
           box2.scaling.y = Math.abs(Math.cos(t));
           box2.scaling.z = Math.abs(Math.sin(t));
       };
-      setTimeout(redirect, 3500);
+      setTimeout(redirect, (Math.random()*1000)+3500);
       engine.runRenderLoop(renderLoop);
     </script>
   </body>
