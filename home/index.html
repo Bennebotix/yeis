@@ -40,7 +40,7 @@
             var redirect = function () {
                 loaded = true
             };
-            var renderLoop = function () {
+            while (loaded == false) {
                 scene.render();
                 t -= 0.01;
                 box1.rotation.y = t*2;
@@ -53,11 +53,8 @@
                 box2.scaling.x = Math.abs(Math.sin(t));
                 box2.scaling.y = Math.abs(Math.cos(t));
                 box2.scaling.z = Math.abs(Math.sin(t));
+                setTimeout(redirect, (Math.random()*1000)+3500);
             };
-            setTimeout(redirect, (Math.random()*1000)+3500);
-            if (loaded == false) {
-                engine.runRenderLoop(renderLoop);
-            }
         </script>
         <script>
             var params = {
