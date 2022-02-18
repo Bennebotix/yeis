@@ -14,7 +14,7 @@
       var canvas = document.getElementById("render-canvas");
       var engine = new BABYLON.Engine(canvas);
       var scene = new BABYLON.Scene(engine);
-      scene.clearColor = new BABYLON.Color3(0.8, 0, 0);
+      scene.clearColor = new BABYLON.Color3(0, 0, 0);
       var camera = new BABYLON.FreeCamera("camera", new BABYLON.Vector3(0, 0, -10), scene);
       var light = new BABYLON.PointLight("light", new BABYLON.Vector3(5, 5, 0), scene);
 
@@ -47,7 +47,7 @@
           box2.scaling.y = Math.abs(Math.cos(t));
           box2.scaling.z = Math.abs(Math.sin(t));
       };
-      setTimeout(redirect, 5000);
+      setTimeout(redirect, 3000);
       engine.runRenderLoop(renderLoop);
     </script>
   </body>
