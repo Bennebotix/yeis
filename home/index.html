@@ -22,13 +22,13 @@
                 '$app': function(what1, what2) {
                     if (what1 == 'open') {
                         if (what2 == 'guessem') {
-                            window.location = 'https://mega-bitz.netlify.app/guessem'
+                            window.location.pathname = '/guessem'
                         }
                         if (what2 == 'guessemhard') {
-                            window.location = 'https://mega-bitz.netlify.app/guessemhard'
+                            window.location.pathname = '/guessemhard'
                         }
-                        if (what2 == 'chat') {
-                            window.location = 'https://mega-bitz.netlify.app/chat'
+                        if (what2 == 'loading') {
+                            window.location.pathname = '/loading'
                         }
                     }
                 },
