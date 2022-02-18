@@ -38,7 +38,7 @@
             box2.material = boxMaterial
             var t = 0
             var redirect = function () {
-                loaded = true
+                engine.stopRenderLoop(rendreLoop)
             };
             var renderLoop = function () {
                 scene.render();
