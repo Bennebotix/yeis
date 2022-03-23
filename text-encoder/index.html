@@ -12,6 +12,7 @@ html,body,canvas { margin: 0; padding: 0; width: 100%; height: 100%; font-size: 
 </head>
 <body id='body'>
 <script>
+var copytext = ''
 function encode(text) {
 const old = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!?.-1234567890'
 const newo = 'QDACZ6!EWFSVX3RTJGM?7BU-5YKH2NIOLPqcae14zd.wvsr8xftmg9ubjyhink0pol'
@@ -55,18 +56,32 @@ return encoded
 </script>
 <script>
 $('body').terminal({
+'copy': function() {
+var text = copytext
+var elem = document.createElement("textarea");
+document.body.appendChild(elem);
+elemold.value = text;
+elemold.select();
+document.execCommand("copy");
+document.body.removeChild(elem);
+this.echo('> Copied!')
+}
 'text': function(what1, what2) {
 if (what1 == 'encode') {
 this.echo('> ' + encode(what2))
+copytext = encode(what2)
 }
 if (what1 == 'decode') {
 this.echo('> ' + decode(what2))
+copytext = decode(what2)
 }
 if (what1 == 'encode++') {
 this.echo('> ' + encode2(what2))
+copytext = encode2(what2)
 }
 if (what1 == 'decode++') {
 this.echo('> ' + decode2(what2))
+copytext = decode2(what2)
 }
 }
 }, {
