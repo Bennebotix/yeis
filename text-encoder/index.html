@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html>
     <head>
@@ -15,15 +13,15 @@
     <body id='body'>
       <script>
         function encode(text) {
-        const old = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz !?.-1234567890'
-        const newo = 'QDACZ6!EWFSVX3RTJGM?7BU-5YKH2NIOLPqcae14zd.wvsr8xftmg9ubj yhink0pol'
-        var encoded = ''
-        for (let i = 0; i < text.length; i++) {
-          encoded += newo.charAt(old.indexOf(text.charAt(i)));
-          // console.log(encoded);
+          const old = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz !?.-1234567890'
+          const newo = 'QDACZ6!EWFSVX3RTJGM?7BU-5YKH2NIOLPqcae14zd.wvsr8xftmg9ubj yhink0pol'
+          var encoded = ''
+          for (let i = 0; i < text.length; i++) {
+            encoded += newo.charAt(old.indexOf(text.charAt(i)));
+            // console.log(encoded);
+          }
+          return encoded
         }
-        return encoded
-      }
           </script>
           <script>
             $('body').terminal({
