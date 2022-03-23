@@ -1,38 +1,77 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-        <script src="https://unpkg.com/jquery.terminal/js/jquery.terminal.min.js"></script>
-        <link rel="stylesheet" href="https://unpkg.com/jquery.terminal/css/jquery.terminal.min.css"/>
-        <link rel="icon" href="icon.png">
-        <title>Mega Bitz|Text Encoder</title>
-        <style>
-            html,body,canvas { margin: 0; padding: 0; width: 100%; height: 100%; font-size: 0; }
-        </style>
-    </head>
-    <body id='body'>
-      <script>
-        function encode(text) {
-          const old = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz !?.-1234567890'
-          const newo = 'QDACZ6!EWFSVX3RTJGM?7BU-5YKH2NIOLPqcae14zd.wvsr8xftmg9ubj yhink0pol'
-          var encoded = ''
-          for (let i = 0; i < text.length; i++) {
-            encoded += newo.charAt(old.indexOf(text.charAt(i)));
-            // console.log(encoded);
-          }
-          return encoded
-        }
-          </script>
-          <script>
-            $('body').terminal({
-                'text': function(what1, what2) {
-                  if (what1 == 'encode') {
-                    this.echo('> ' + encode(what2))
-                  }
-                }
-            }, {
-                greetings: ''
-            });
-        </script>
-    </body> 
+<head>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://unpkg.com/jquery.terminal/js/jquery.terminal.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/jquery.terminal/css/jquery.terminal.min.css"/>
+<link rel="icon" href="icon.png">
+<title>Mega Bitz|Text Encoder</title>
+<style>
+html,body,canvas { margin: 0; padding: 0; width: 100%; height: 100%; font-size: 0; }
+</style>
+</head>
+<body id='body'>
+<script>
+function encode(text) {
+const old = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!?.-1234567890'
+const newo = 'QDACZ6!EWFSVX3RTJGM?7BU-5YKH2NIOLPqcae14zd.wvsr8xftmg9ubjyhink0pol'
+var encoded = ''
+for (let i = 0; i < text.length; i++) {
+encoded += newo.charAt(old.indexOf(text.charAt(i)));
+// console.log(encoded);
+}
+return encoded
+}
+function decode(text) {
+const old = 'QDACZ6!EWFSVX3RTJGM?7BU-5YKH2NIOLPqcae14zd.wvsr8xftmg9ubjyhink0pol'
+const newo = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!?.-1234567890'
+var encoded = ''
+for (let i = 0; i < text.length; i++) {
+encoded += newo.charAt(old.indexOf(text.charAt(i)));
+// console.log(encoded);
+}
+return encoded
+}
+function encode2(text) {
+const old = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!?.-1234567890'
+const newo = 'QWASZXER14DF-CVrsf2xvtu5gjb3myihkno6lp.?!T0YGHBNU9IJKM8OPLqe7adzcw'
+var encoded = ''
+for (let i = 0; i < text.length; i++) {
+encoded += newo.charAt(old.indexOf(text.charAt(i)));
+// console.log(encoded);
+}
+return encoded
+}
+function decode2(text) {
+const old = 'QWASZXER14DF-CVrsf2xvtu5gjb3myihkno6lp.?!T0YGHBNU9IJKM8OPLqe7adzcw'
+const newo = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!?.-1234567890'
+var encoded = ''
+for (let i = 0; i < text.length; i++) {
+encoded += newo.charAt(old.indexOf(text.charAt(i)));
+// console.log(encoded);
+}
+return encoded
+}
+</script>
+<script>
+$('body').terminal({
+'text': function(what1, what2) {
+if (what1 == 'encode') {
+this.echo('> ' + encode(what2))
+}
+if (what1 == 'decode') {
+this.echo('> ' + decode(what2))
+}
+if (what1 == 'encode++') {
+this.echo('> ' + encode2(what2))
+}
+if (what1 == 'decode++') {
+this.echo('> ' + decode2(what2))
+}
+}
+}, {
+greetings: ''
+});
+</script>
+</body> 
 </html>
