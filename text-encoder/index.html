@@ -60,8 +60,8 @@ $('body').terminal({
 var text = copytext
 var elem = document.createElement("textarea");
 document.body.appendChild(elem);
-elemold.value = text;
-elemold.select();
+elem.value = text;
+elem.select();
 document.execCommand("copy");
 document.body.removeChild(elem);
 this.echo('> Copied!')
