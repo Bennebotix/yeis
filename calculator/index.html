@@ -14,43 +14,43 @@ html,body,canvas { margin: 0; padding: 0; width: 100%; height: 100%; font-size: 
 <script>
 $('body').terminal({
 'add': function(what1, what2) {
-  this.echo(what1 + what2)
+this.echo('> ' + what1 + what2)
 },
 'sub': function(what1, what2) {
-  this.echo(what1 - what2)
+this.echo('> ' + what1 - what2)
 },
 'mul': function(what1, what2) {
-  this.echo(what1 * what2)
+this.echo('> ' + what1 * what2)
 },
 'div': function(what1, what2) {
-  this.echo(what1 / what2)
+this.echo('> ' + what1 / what2)
 },
 '+': function(what1, what2) {
-  this.echo(what1 + what2)
+this.echo('> ' + what1 + what2)
 },
 '-': function(what1, what2) {
-  this.echo(what1 - what2)
+this.echo('> ' + what1 - what2)
 },
 '*': function(what1, what2) {
-  this.echo(what1 * what2)
+this.echo('> ' + what1 * what2)
 },
 '/': function(what1, what2) {
-  this.echo(what1 / what2)
+this.echo('> ' + what1 / what2)
 },
 'plus': function(what1, what2) {
-  this.echo(what1 + what2)
+this.echo('> ' + what1 + what2)
 },
 'minus': function(what1, what2) {
-  this.echo(what1 - what2)
+this.echo('> ' + what1 - what2)
 },
 'X': function(what1, what2) {
-  this.echo(what1 * what2)
+this.echo('> ' + what1 * what2)
 },
 'x': function(what1, what2) {
-  this.echo(what1 * what2)
+this.echo('> ' + what1 * what2)
 },
 '÷': function(what1, what2) {
-  this.echo(what1 / what2)
+this.echo('> ' + what1 / what2)
 }
 }, {
 greetings: '> Welcome to Calculator:\n> Instructions:\n> Enter "{To add: "add", "+",\n> or "plus". To subtract:\n> "sub", "-", or "minus". To\n> multiply:\ "mul", "*", "x",\n> or "X". To divide: "div",\n> "/", or "÷"} {number1 one\n> the left side of the operator}\n> {number2 one the right side\n> of the operator} then it will\n> calculate.\n>'
