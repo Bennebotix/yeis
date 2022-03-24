@@ -28,6 +28,9 @@ pass: ''
 </script>
 <script>
 $('body').terminal({
+'pi': function() {
+this.echo('3.14159265358979323846264338327950288419716939937510')
+}
 '$app': function(what1, what2) {
 if (what1 == 'open') {
 if (what2 == 'guessem') {
