@@ -56,6 +56,9 @@ return encoded
 </script>
 <script>
 $('body').terminal({
+'home': function() {
+window.location = 'https://mega-bitz.netlify.app/home'
+},
 'copy': function() {
 var text = copytext
 var elem = document.createElement("textarea");
