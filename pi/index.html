@@ -1,4 +1,26 @@
-  function bi(n, b) { return new jsbn.BigInteger(n.toString(), b ? b : 10); };
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://unpkg.com/jquery.terminal/js/jquery.terminal.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/jquery.terminal/css/jquery.terminal.min.css"/>
+<title>Mega Bitz|Guess'em</title>
+<style>
+html,body,canvas { margin: 0; padding: 0; width: 100%; height: 100%; font-size: 0; }
+</style>
+</head>
+<body>
+<script>
+var num = (Math.random() * 100).toFixed(0)
+var pn = 1
+var tries = 0
+var oot = 'try'
+var close = 0
+</script>
+<script>
+$('body').terminal({
+'start': function() {
+  this.echo(function bi(n, b) { return new jsbn.BigInteger(n.toString(), b ? b : 10); };
   var one=bi(1), two=bi(2), three=bi(3), four=bi(4), seven=bi(7), ten=bi(10);
   function calcPi() {
       var q=bi(1), r=bi(0), t=bi(1), k=bi(1), n=bi(3), l=bi(3);
@@ -36,4 +58,11 @@
       }
       continueCalcPi(q, r, t, k, n, l);
   }
-  calcPi();
+  calcPi();)
+}
+}, {
+greetings: ''
+})
+</script>
+</body>
+</html>
