@@ -30,7 +30,7 @@ pass: ''
 $('body').terminal({
 'help': function(){
 this.echo('8ball: Says a phrase\n> pi: copies some of pi\n> 8ball-answer: type in a question after the command and it will answer\n> $sudo games pls: will send you to io games unblocked\n>$sudo guessm: will send you to the game guessm\n> $sudo guessmhard: will send you to guessm but harder \n> email: sends a Email to Bennett')
-}
+},
 'random': function(what1, what2, what3){
 this.echo('> ' + (((Math.random()*(what2-what1))+what1).toFixed(what3)))
 },
