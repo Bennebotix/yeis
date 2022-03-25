@@ -28,6 +28,9 @@ pass: ''
 </script>
 <script>
 $('body').terminal({
+'help': function(){
+this.echo('8ball: Says a phrase\n> pi: copies some of pi\n> 8ball-answer: type in a question after the command and it will answer\n> $sudo games pls: will send you to io games unblocked\n>$sudo guessm: will send you to the game guessm\n> $sudo guessmhard: will send you to guessm but harder \n> email: sends a Email to Bennett')
+}
 'random': function(what1, what2, what3){
 this.echo('> ' + (((Math.random()*(what2-what1))+what1).toFixed(what3)))
 },
@@ -42,7 +45,7 @@ var check = list[pick]
 this.echo('> ' + check)
 },
 '8ball': function(){
-var list = ['If you got this message you are lucky (not so much though), becas it is rare. All of the other ones are more common. Oops  spelling error  *because*.','Your butt is juicy. Want to be my friend.','Bodhi is cool!','Blah  Blah  Blah  Blah  Blah  Blah  Blah  Blah  Blah  Blah  Blah  Blah  Blah  Blah…','Do 10 Jumping-Jacks        GO!','Snurgampap','In the dictionary on page 348 for the word "Chunky" under similes is says: "Audan\'s mom is CHUNKY".','NaN','123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869…','1..2 Skip a few 99..100','BOOM!!!           "Uhhhh Dady".           There goes Josh again. ','Yell in Mexican on the count of three.     1.........2.........3!! AAAAAAAHHHHHHHHH!!!!','Pizza is yummy in my tummy.','Bennett is good at coding.              Yeah...','undefined','Amogus dun..dun...dun..dun..dun..dun..dun..dun..dun.....dun.dun.dun','Hahahahahahahahaha…          HAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA!!!']
+var list = ['If you got this message you are lucky (not so much though), becas it is rare. All of the other ones are more common. Oops  spelling error  *because*.','Your butt is juicy. Want to be my friend.','Bodhi is cool!','Blah  Blah  Blah  Blah  Blah  Blah  Blah  Blah  Blah  Blah  Blah  Blah  Blah  Blah…','Do 10 Jumping-Jacks        GO!','Snurgampap','In the dictionary on page 348 for the word "Chunky" under similes is says: "Aidan\'s mom is CHUNKY".','NaN','123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869…','1..2 Skip a few 99..100','BOOM!!!           "Uhhhh Dady".           There goes Josh again. ','Yell in Mexican on the count of three.     1.........2.........3!! AAAAAAAHHHHHHHHH!!!!','Pizza is yummy in my tummy.','Bennett is good at coding.              Yeah...','undefined','Amogus dun..dun...dun..dun..dun..dun..dun..dun..dun.....dun.dun.dun','Hahahahahahahahaha…          HAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA!!!']
 var pick = (Math.random()*list.length).toFixed(0)
 this.echo('> ' + list[pick])
 },
@@ -67,7 +70,7 @@ window.location.pathname = '/guessemhard'
 if (what2 == 'loading') {
 window.location.pathname = '/loading'
 }
-if (what2 == 'encode') {
+if (what2 == 'encode') {\n> 
 window.location.pathname = '/text-encoder'
 }
 if (what2 == 'calc') {
