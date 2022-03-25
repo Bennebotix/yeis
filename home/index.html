@@ -16,7 +16,7 @@ html,body,canvas { margin: 0; padding: 0; width: 100%; height: 100%; font-size: 
 <script>
 var what = {
 from: '',
-message''
+message: ''
 }
 </script>
 <script>
@@ -28,12 +28,8 @@ pass: ''
 </script>
 <script>
 $('body').terminal({
-'random': function(what1, what2){
-if (what3 == 'yes') {
-this.echo('> ' + (((Math.random()*(what2-what1))+what1).toFixed(0)))
-} else {
-this.echo('> ' + (((Math.random()*(what2-what1))+what1))
-}
+'random': function(what1, what2, what3){
+this.echo('> ' + (((Math.random()*(what2-what1))+what1).toFixed(what3)))
 },
 '8ball-answer': function(what1){
 var pick = ((Math.random()*2)-1).toFixed(0)
