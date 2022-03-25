@@ -29,7 +29,7 @@ pass: ''
 <script>
 $('body').terminal({
 'random': function(what1, what2){
-this.echo('> ' + ((Math.random()*(what1-what2)+what1).toFixed(0)))
+this.echo('> ' + ((Math.random()*(what1-what2)+what2).toFixed(0)))
 }
 '8ball-answer': function(what1){
 var pick = ((Math.random()*2)-1).toFixed(0)
