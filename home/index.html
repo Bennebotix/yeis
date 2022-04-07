@@ -60,25 +60,25 @@ $('body').terminal({
 // document.body.removeChild(elem);
 // this.echo('> 3.14159265358979323846264338327950288419716939937510\n> Copied!')
 // },
-// '$app': function(what1, what2) {
-// if (what1 == 'open') {
-// if (what2 == 'guessem') {
-// window.location.pathname = '/guessem'
-// }
-// if (what2 == 'guessemhard') {
-// window.location.pathname = '/guessemhard'
-// }
-// if (what2 == 'loading') {
-// window.location.pathname = '/loading'
-// }
-// if (what2 == 'encode') {\n> 
-// window.location.pathname = '/text-encoder'
-// }
-// if (what2 == 'calc') {
-// window.location.pathname = '/calculator'
-// }
-// }
-// },
+'$app': function(what1, what2) {
+if (what1 == 'open') {
+if (what2 == 'guessem') {
+window.location.pathname = '/guessem'
+}
+if (what2 == 'guessemhard') {
+window.location.pathname = '/guessemhard'
+}
+if (what2 == 'loading') {
+window.location.pathname = '/loading'
+}
+if (what2 == 'encode') {\n> 
+window.location.pathname = '/text-encoder'
+}
+if (what2 == 'calc') {
+window.location.pathname = '/calculator'
+}
+}
+},
 // 'email': function(what1, what2) {
 // what = {
 // from: what1,
