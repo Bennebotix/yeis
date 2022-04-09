@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="icon" href="icon.png">
+<title>Mega Bitz|Chat</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+html,body,canvas { margin: 0; padding: 0; width: 100%; height: 100%; font-size: 0; }
+</style>
+</head>
+<body>
+<div class="m-0 p-0 border-0 bg-fixed" id="rt-905023148afc59a76a65b81d16aee977"></div> <script>/*jslint browser: true, for: true */
+/*global window */
+
+(function (window, document) {
+    'use strict';
+
+    /** @const {Object} different embedding types */
+    var EMBED_TYPES = {
+        EMBEDDED: 0,
+        FLOATING: 1,
+        MOBILE_FULL: 2
+    };
+
+    if (!window.RumbleTalkChat) {
+        window.RumbleTalkChat = {
+            /** @param {string} default viewport content value for pages without one */
+            defaultContent: 'width=device-width, initial-scale=1, maximum-scale=1',
+
+            /**
+             * adjusts the document's viewport to prevent auto zoom
+             * this functionality is controversial and therefore configurable by the chat owner
+             */
+            adjustViewport: function () {
+                var viewportElement = document.querySelector('[name="viewport"]');
+
+                /* if the viewport was found, validate its content */
+                if (viewportElement) {
+                    var content = viewportElement.getAttribute('content');
+                    /* if there's content, validate the existence of the maximum-scale part */
+                    if (content) {
+                        var hasMaximumScale = false;
+                        var contentParts = content.split(',')
+                            .map(function (property) {
+                                property = property.trim();
+                                if (property.startsWith('maximum-scale')) {
+                                    hasMaximumScale = true;
+                                }
+                                return property;
+                            });
+                        /* if there's no maximum-scale part, add one */
+                        if (!hasMaximumScale) {
+                            contentParts.push('maximum-scale=1');
+                        }
+                        content = contentParts.join(', ');
+                    }
+                    /* if there's no content, use the default content */
+                    else {
+                        content = window.RumbleTalkChat.defaultContent;
+                    }
+                    viewportElement.setAttribute('content', content);
+                }
+                /* if there's no viewport, create one with the default content and add it to the document */
+                else {
+                    viewportElement = document.createElement('meta');
+                    viewportElement.setAttribute('name', 'viewport');
+                    viewportElement.setAttribute('content', window.RumbleTalkChat.defaultContent);
+                    /* insert as the first child of the head to take priority over duplicates */
+                    document.head.insertBefore(viewportElement, document.head.firstChild);
+                }
+            },
+
+            /**
+             * initiates the chat and creates the iframe in the document
+             * @param {Object} data the chat data as supplied by htdocs/client/index.php
+             * @return {Object} the embed object
+             */
+            init: function (data) {
+                if (window.RumbleTalkChat[data.hash]) {
+                    throw new Error('Trying to create a duplicate chat with code: ' + data.hash);
+                }
+
+                /* adjust the document viewport iff the chat is configured to do so */
+                if (data.adjustViewport) {
+                    this.adjustViewport();
+                }
+
+                /* immediately create a temporary div for legacy support */
+                var tempDivId = '__rtc-' + (new Date()).getTime(),
+                    tempDiv;
+                try {
+                    document.write('<div id="' + tempDivId + '"></div>');
+                    tempDiv = document.getElementById(tempDivId);
+                } catch (ignore) {
+                }
+
+                /** @member {string} - the user agent of the client in upper case */
+                var ua = navigator.userAgent.toUpperCase();
+
+                var embed = {
+                    /** @member {HTMLElement} - the main div element that holds the embedded HTML */
+                    mainDiv: null,
+
+                    /** @member {HTMLElement} - the parent of the main div */
+                    parent: null,
+
+                    /** @member {HTMLElement} - the div wrapping the chat in the floating embed type */
+                    chatDiv: null,
+
+                    /** @member {HTMLElement} - the div that displays the number of chatters */
+                    counterDiv: null,
+
+                    /** @member {HTMLElement|Window} - the target chat connection: window or <iframe> */
+                    iframe: null,
+
+                    /** @member {string} - legacy protocol holder */
+                    protocol: 'https://',
+
+                    /** @member {string} - the assigned chat server address */
+                    server: '',
+
+                    /** @member {string} - the chat's public id */
+                    hash: '',
+
+                    /** @member {number} - the id of the interval used to start a connection with the chat JS */
+                    messageInterval: 0,
+
+                    /** @member {number} - number of currently connected sessions in the chat */
+                    userCount: 0,
+
+                    /** @member {number} - embed type based on EMBED_TYPES */
+                    embedType: 0,
+
+                    /** @member {number} - the width of the chat in case of floating option */
+                    width: 0,
+
+                    /** @member {number} - the height of the chat in case of floating option */
+                    height: 0,
+
+                    /** @member {string} - the floating image url */
+                    image: 'https://d1pfint8izqszg.cloudfront.net/images/toolbar/toolbar.png',
+
+                    /** @member {boolean} - whether or not to display the users count on top of the image */
+                    counter: true,
+
+                    /** @member {number} - the distance (in pixels) from the top of the floating image */
+                    counterTop: 14,
+
+                    /** @member {number} - the distance (in pixels) from the left of the floating image */
+                    counterLeft: 23,
+
+                    /** @member {number} - the id of the toggle chat display interval */
+                    floatingToggleInterval: 0,
+
+                    /** @member {string} - base website URL */
+                    baseWebUrl: 'https://rumbletalk.com/',
+
+                    /** @member {string} - the URL to fetch the current [new] chat server address */
+                    serviceRelativeUrl: 'client/service.php?hash=',
+
+                    /** @member {boolean} - whether or not the client is on a mobile device or not */
+                    mobile: ua.indexOf('MOBILE') !== -1 || ua.indexOf('ANDROID') !== -1 || ua.indexOf('IOS') !== -1,
+
+                    /** @member {string} - base URL of the CDN */
+                    cdn: '',
+
+                    /**
+                     * instantiates the chat
+                     *
+                     * @param {Object} data
+                     * @param {string} data.divId - the chat MD5 of its public id
+                     * @param {string} data.server - the server address
+                     * @param {number} data.embedType - embedding type
+                     * @param {string} data.hash - the chat's public id
+                     * @param {string} data.cdn - the base URL of the CDN
+                     * @param {boolean} data.showDetails - whether or not to display the users count on the floating image
+                     */
+                    init: function (data) {
+                        embed.mainDiv = document.getElementById(data.divId);
+
+                        /* remove the tempDiv if the main div was found */
+                        if (embed.mainDiv) {
+                            if (tempDiv) {
+                                tempDiv.parentNode.removeChild(tempDiv);
+                            }
+                        } else {
+                            embed.mainDiv = tempDiv;
+                        }
+                        embed.parent = embed.mainDiv.parentNode;
+
+                        if (data.baseWebUrl) {
+                            embed.baseWebUrl = data.baseWebUrl;
+                        }
+                        embed.server = data.server;
+                        embed.hash = data.hash;
+                        embed.cdn = data.cdn;
+                        embed.embedType = data.embedType;
+                        embed.width = data.width;
+                        embed.height = data.height;
+                        embed.image = data.image;
+                        embed.counter = data.showDetails;
+                        embed.side = data.side === 0
+                            ? 'right'
+                            : 'left';
+
+                        embed.parseDivData();
+
+                        /* if web and embed type 2, treat as embedded (0) */
+                        if (!embed.mobile && embed.embedType === EMBED_TYPES.MOBILE_FULL) {
+                            embed.embedType = EMBED_TYPES.EMBEDDED;
+                        }
+
+                        switch (embed.embedType) {
+                            case EMBED_TYPES.EMBEDDED:
+                                embed.mainDiv.className = 'rumbletalk-embed';
+                                embed.buildIframe(embed.mainDiv);
+                                embed.size();
+                                break;
+
+                            case EMBED_TYPES.FLOATING:
+                                embed.mainDiv.className = 'rumbletalk-floating rumbletalk-floating-' + embed.side;
+                                embed.drawFloatingImage(embed.side);
+                                if (embed.mobile) {
+                                    embed.openChat(embed.mainDiv);
+                                } else {
+                                    embed.buildFloatingDiv(embed.side);
+                                    embed.buildIframe(embed.chatDiv);
+                                }
+                                break;
+
+                            case EMBED_TYPES.MOBILE_FULL:
+                                embed.mainDiv.className = 'rumbletalk-embed-image';
+                                embed.drawImage(embed.mainDiv);
+                                embed.openChat(embed.mainDiv);
+                                break;
+                        }
+
+                        embed.addListeners();
+                    },
+
+                    /**
+                     * parse data attributes from the <div> and overwrite the default values
+                     */
+                    parseDivData: function () {
+                        var options = ['width', 'height'],
+                            index,
+                            value;
+
+                        /* get width, height, floating clicked image, and floating window side */
+                        for (index = 0; index < options.length; index++) {
+                            value = embed.mainDiv.getAttribute('data-' + options[index]);
+                            if (value) {
+                                embed[options[index]] = value;
+                            }
+                        }
+
+                        /* check if embed type is set to floating */
+                        value = embed.mainDiv.getAttribute('data-floating');
+                        if (value !== null && value !== 'false') {
+                            embed.embedType = EMBED_TYPES.FLOATING;
+
+                            /* set the floating image */
+                            value = embed.mainDiv.getAttribute('data-image');
+                            if (value != null) {
+                                embed.image = value;
+                            }
+
+                            /* set the side of the floating image */
+                            value = embed.mainDiv.getAttribute('data-side');
+                            if (value != null) {
+                                embed.side = value === 'left'
+                                    ? 'left'
+                                    : 'right';
+                            }
+
+                            /* check if do display the counter */
+                            value = embed.mainDiv.getAttribute('data-counter');
+                            if (value === null || value === 'false') {
+                                embed.counter = false;
+                                return;
+                            }
+
+                            embed.counter = true;
+
+                            /* validate position format: top,left (e.g. 14,23) */
+                            if (value.indexOf(',') === -1) {
+                                return;
+                            }
+
+                            /* format of the value is  */
+                            value = value.split(',');
+
+                            /* get the counter top position */
+                            value[0] = Number(value[0]);
+                            if (!isNaN(value[0])) {
+                                embed.counterTop = value[0];
+                            }
+
+                            /* get the counter left position */
+                            value[1] = Number(value[1]);
+                            if (!isNaN(value[1])) {
+                                embed.counterLeft = value[1];
+                            }
+                        }
+                    },
+
+                    /**
+                     * build the chat <iframe> and appends it to the given target
+                     * @param {HTMLElement} target - the target node to append the iframe to
+                     */
+                    buildIframe: function (target) {
+                        target.style.overflow = 'hidden';
+                        embed.iframe = document.createElement('iframe');
+                        embed.iframe.src = embed.protocol + embed.server + '/' + embed.hash + '/#' + window.location.href;
+                        embed.iframe.setAttribute('allow', 'microphone; camera; fullscreen; autoplay');
+                        embed.iframe.style.width = embed.width + 'px';
+                        embed.iframe.style.height = '100%';
+                        embed.iframe.style.overflow = 'hidden';
+                        embed.iframe.style.border = 0;
+                        embed.iframe.style.backgroundColor = 'transparent';
+                        target.appendChild(embed.iframe);
+                    },
+
+                    /**
+                     * draw an image in the chat location
+                     * @param {HTMLElement} target - the given chat location
+                     */
+                    drawImage: function (target) {
+                        var img = new Image(),
+                            mobileStr = 'Click here to join the chat';
+
+                        target.style.textAlign = 'center';
+
+                        img.src = embed.cdn + 'images/mobile-redirect.png';
+                        img.style.cursor = 'pointer';
+                        img.alt = mobileStr;
+                        img.setAttribute('role', 'link');
+                        target.appendChild(img);
+
+                        var textNode = document.createElement('h3');
+                        textNode.innerHTML = mobileStr;
+                        textNode.setAttribute('role', 'link');
+                        target.appendChild(textNode);
+                    },
+
+                    /**
+                     * draws the floating image
+                     * @param {string} side - the side the floating image should be placed in
+                     */
+                    drawFloatingImage: function (side) {
+                        /* position the main div */
+                        embed.mainDiv.style.position = 'fixed';
+                        embed.mainDiv.style.bottom = '5px';
+                        embed.mainDiv.style[side] = '5px';
+                        embed.mainDiv.style.zIndex = 2147483647;
+
+                        /* the floating image */
+                        var floatingImage = new Image();
+                        floatingImage.onload = function () {
+                            /* match the dimensions of the image and the wrapping div */
+                            embed.mainDiv.style.height = floatingImage.height + 'px';
+                            embed.mainDiv.style.width = floatingImage.width + 'px';
+
+                            /* place the chat div right above the image */
+                            if (!embed.mobile) {
+                                embed.chatDiv.style.bottom = floatingImage.height + 'px';
+                            }
+                        };
+                        floatingImage.src = embed.image;
+                        floatingImage.style.maxWidth = 'none';
+                        floatingImage.style.position = 'absolute';
+                        floatingImage.style.bottom = 0;
+                        floatingImage.style[side] = 0;
+                        floatingImage.alt = 'Click to join the conversation';
+                        floatingImage.title = 'Click to join the conversation';
+                        embed.mainDiv.appendChild(floatingImage);
+
+                        /* displays the number of chatters */
+                        if (embed.counter) {
+                            embed.counterDiv = document.createElement('div');
+                            embed.counterDiv.style.position = 'absolute';
+                            embed.counterDiv.style.top = embed.counterTop + 'px';
+                            embed.counterDiv.style.left = embed.counterLeft + 'px';
+                            embed.counterDiv.style.width = '28px';
+                            embed.counterDiv.style.textAlign = 'center';
+                            embed.counterDiv.style.font = 'bold 12px arial';
+                            embed.counterDiv.style.color = '#000';
+                            embed.counterDiv.style.userSelect = 'none';
+
+                            /* temporary loading gif for non-mobile users */
+                            if (!embed.mobile) {
+                                var img = new Image();
+                                img.src = embed.cdn + 'images/toolbar/mini_wait.gif';
+                                img.alt = 'loading';
+                                embed.counterDiv.appendChild(img);
+                            }
+
+                            embed.mainDiv.appendChild(embed.counterDiv);
+                        }
+
+                        return floatingImage;
+                    },
+
+                    /**
+                     * builds the wrapping div for the chat in floating embed type
+                     * @param {string} side - the side in which the chat is placed
+                     */
+                    buildFloatingDiv: function (side) {
+                        embed.chatDiv = document.createElement('div');
+                        embed.chatDiv.style.position = 'absolute';
+                        embed.chatDiv.style.bottom = '75px';
+                        embed.chatDiv.style[side] = 0;
+                        embed.chatDiv.style.visibility = 'hidden';
+                        embed.chatDiv.style.overflow = 'hidden';
+                        embed.chatDiv.style.padding = 0;
+                        embed.chatDiv.style.height = 0;
+                        embed.mainDiv.appendChild(embed.chatDiv);
+
+                        embed.mainDiv.onclick = embed.toggleFloatingChatStart;
+                        embed.mainDiv.style.cursor = 'pointer';
+
+                        /* add the "close chat" button */
+                        var img = new Image(),
+                            oppositeSide = side === 'right'
+                                ? 'left'
+                                : 'right';
+                        img.src = embed.cdn + 'images/c.png';
+                        img.style.cursor = 'pointer';
+                        img.style.position = 'absolute';
+                        img.style.top = '-9px';
+                        img.style[oppositeSide] = '-8px';
+                        img.onclick = function () {
+                            embed.toggleFloatingChatStart(true);
+                        };
+                        embed.chatDiv.appendChild(img);
+                    },
+
+                    /**
+                     * attaches the open chat event to the given target
+                     * @param {HTMLElement} target
+                     */
+                    openChat: function (target) {
+                        var link = embed.baseWebUrl + 'client/chat.php?' + embed.hash,
+                            iframeInterval;
+
+                        target.onclick = function () {
+                            if (embed.iframe) {
+                                embed.iframe.focus();
+                            } else {
+                                embed.iframe = window.open(link);
+
+                                /* now that we have an iframe, we can add the listener */
+                                embed.iframe.addEventListener('load', embed.load, false);
+
+                                iframeInterval = setInterval(
+                                    function () {
+                                        if (embed.iframe.closed) {
+                                            clearInterval(iframeInterval);
+                                            if (typeof embed.iframe.removeEventListener === 'function') {
+                                                embed.iframe.removeEventListener('load', embed.load);
+                                            }
+                                            delete embed.iframe;
+                                        }
+                                    },
+                                    100
+                                );
+                            }
+                        };
+                    },
+
+                    /**
+                     * returns the summarized value of the supplied attributes names of an object
+                     * @param {HTMLElement} object - the object to run the function on
+                     * @param {Array} attributesList - an array of attribute names
+                     * @returns {number} -  summarized total value
+                     */
+                    summarizedStyleValues: function (object, attributesList) {
+                        var sum = 0,
+                            index,
+                            value;
+
+                        for (index = 0; index < attributesList.length; index += 1) {
+                            value = window.getComputedStyle
+                                ? window.getComputedStyle(object, '')[attributesList[index]]
+                                : object.currentStyle[attributesList[index]];
+
+                            if (isNaN(parseInt(value))) {
+                                value = 0;
+                            }
+
+                            sum += parseInt(value);
+                        }
+
+                        return sum;
+                    },
+
+                    /**
+                     * adjusts the size of the <iframe> tag to fit to the parent element
+                     */
+                    size: function () {
+                        var width = 0,
+                            height = 0;
+
+                        if (!embed.iframe) {
+                            return;
+                        }
+
+                        /*
+                         * if the parent has the proper id; i.e in "chat.php",
+                         * set as resizable [not just increase] full screen
+                         */
+                        if (
+                            embed.parent.id === 'rumbletalk-chat-fullscreen' &&
+                            window.innerWidth > 0 && window.innerHeight > 0
+                        ) {
+                            width = window.innerWidth;
+                            height = window.innerHeight;
+                        } else if (embed.parent.clientWidth > 0 && embed.parent.clientHeight > 0) {
+                            width = embed.parent.clientWidth;
+                            height = embed.parent.clientHeight;
+                        } else if (
+                            embed.summarizedStyleValues(embed.parent, ['width']) > 0 &&
+                            embed.summarizedStyleValues(embed.parent, ['height']) > 0
+                        ) {
+                            width = embed.summarizedStyleValues(embed.parent, ['width']);
+                            height = embed.summarizedStyleValues(embed.parent, ['height']);
+                        } else if (parseInt(embed.parent.width) > 0 && parseInt(embed.parent.height) > 0) {
+                            width = parseInt(embed.parent.width);
+                            height = parseInt(embed.parent.height);
+                        }
+
+                        if (width > 0 && height > 0) {
+                            var widthAdd = document.compatMode === 'CSS1Compat'
+                                ? 0
+                                : embed.summarizedStyleValues(
+                                    embed.parent,
+                                    ['marginLeft', 'marginRight', 'paddingLeft', 'paddingRight']
+                                );
+                            width = (width - widthAdd) + 'px';
+
+                            widthAdd = embed.mainDiv.childNodes.length > 1
+                                ? 28
+                                : 0;
+                            height = (
+                                height -
+                                embed.summarizedStyleValues(
+                                    embed.parent,
+                                    ['marginTop', 'marginBottom', 'paddingTop', 'paddingBottom']
+                                ) - widthAdd
+                            ) + 'px';
+                        } else {
+                            width = '100%';
+                            height = '100%';
+                        }
+
+                        if (embed.iframe.style) {
+                            embed.iframe.style.width = width;
+                            embed.iframe.style.height = height;
+                        }
+                    },
+
+                    /**
+                     * instantiate a postMessage connection with the chat
+                     */
+                    query: function () {
+                        try {
+                            var target,
+                                origin;
+                            if (embed.iframe instanceof HTMLIFrameElement) {
+                                target = embed.iframe.contentWindow;
+                                origin = embed.protocol + embed.server;
+                            } else {
+                                target = embed.iframe;
+                                origin = embed.baseWebUrl;
+                            }
+
+                            target.postMessage(
+                                'toolbar',
+                                origin
+                            );
+                        } catch (ignore) {
+                        }
+                    },
+
+                    /**
+                     * handles postMessage requests
+                     * @param {MessageEvent} event - the event object
+                     */
+                    info: function (event) {
+                        if (!embed.validateOrigin(event.origin)) {
+                            return;
+                        }
+
+                        if (isFinite(event.data)) {
+                            clearInterval(embed.messageInterval);
+                            embed.userCount = event.data;
+                            if (embed.counterDiv) {
+                                embed.counterDiv.innerHTML = embed.userCount.toString();
+                            }
+                        } else if (typeof event.data == 'object') {
+                            if (event.data.reload) {
+                                embed.reload();
+                            }
+                        }
+                    },
+
+                    /**
+                     * reloads the iframe (or parent page) in case of a server request
+                     */
+                    reload: function () {
+                        var xhr = new XMLHttpRequest();
+
+                        xhr.open('GET', embed.baseWebUrl + embed.serviceRelativeUrl + embed.hash, true);
+
+                        xhr.onreadystatechange = function () {
+                            if (xhr.readyState !== 4) {
+                                return;
+                            }
+
+                            try {
+                                var response = JSON.parse(xhr.responseText);
+
+                                if (response.status) {
+                                    /* if the SDK is used, reload the entire page so that the user will be re-logged */
+                                    /* into the new chat server */
+                                    if (window.rumbleTalkMessageQueueName !== undefined) {
+                                        location.reload();
+                                        return;
+                                    }
+
+                                    embed.server = response.address;
+                                    var address = embed.protocol + embed.server + '/' + embed.hash + '/#' + window.location.href;
+
+                                    if (embed.iframe instanceof HTMLIFrameElement) {
+                                        if (embed.iframe.src === address) {
+                                            embed.iframe.src = embed.cdn + 'images/toolbar/mini_wait.gif';
+                                            setTimeout(
+                                                function () {
+                                                    embed.iframe.src = address;
+                                                },
+                                                50
+                                            );
+                                        } else {
+                                            embed.iframe.src = address;
+                                        }
+                                    } else {
+                                        if (embed.iframe.location.href === address) {
+                                            embed.iframe.location.href = embed.cdn + 'images/toolbar/mini_wait.gif';
+                                            setTimeout(
+                                                function () {
+                                                    embed.iframe.location.href = address;
+                                                },
+                                                50
+                                            );
+                                        } else {
+                                            embed.iframe.location.href = address;
+                                        }
+                                    }
+                                }
+                            } catch (e) {
+                                location.reload();
+                            }
+                        };
+
+                        xhr.send();
+                    },
+
+                    /**
+                     * add the event listeners based on the embed type and device
+                     */
+                    addListeners: function () {
+                        window.addEventListener('message', embed.info, false);
+
+                        if (embed.embedType === EMBED_TYPES.EMBEDDED) {
+                            window.addEventListener('resize', embed.size, false);
+                        }
+
+                        /* attach the "escape key press" of the window to close the chat */
+                        if (!embed.mobile && embed.embedType === EMBED_TYPES.FLOATING) {
+                            window.addEventListener('keyup', embed.escClose, false);
+                        }
+
+                        /* listen to load if the iframe was instantiated. we don't yet create the iframe on mobile */
+                        if (embed.iframe) {
+                            embed.iframe.addEventListener('load', embed.load, false);
+                        }
+                    },
+
+                    /**
+                     * hides or shows the floating chat
+                     * @param {boolean} [close] - if set to true, will force hide
+                     */
+                    toggleFloatingChatStart: function (close) {
+                        clearInterval(embed.floatingToggleInterval);
+
+                        var steps = -100;
+
+                        if (embed.chatDiv.style.visibility === 'hidden' && close !== true) {
+                            steps *= -1;
+                            embed.chatDiv.style.width = 0;
+                            embed.chatDiv.style.height = 0;
+                            embed.chatDiv.style.visibility = 'visible';
+                            embed.chatDiv.style.overflow = 'visible';
+                        }
+
+                        embed.floatingToggleInterval = setInterval(
+                            function () {
+                                embed.toggleFloatingChat(steps);
+                            },
+                            1
+                        );
+                    },
+
+                    /**
+                     * hide or display the floating chat by @steps
+                     * @param {number} steps - the number of pixels to increment the display by
+                     */
+                    toggleFloatingChat: function (steps) {
+                        var width = embed.chatDiv.offsetWidth + steps,
+                            height = embed.chatDiv.offsetHeight + steps,
+                            check = 0;
+
+                        if (width < 0) {
+                            width = 0;
+                        }
+                        if (height < 0) {
+                            height = 0;
+                        }
+                        if (width >= 0 && height >= 0) {
+                            if (width <= embed.width) {
+                                check = 1;
+                            } else {
+                                width = embed.width;
+                            }
+
+                            if (height <= embed.height) {
+                                check = 1;
+                            } else {
+                                height = embed.height;
+                            }
+
+                            embed.chatDiv.style.width = width + 'px';
+                            embed.chatDiv.style.height = height + 'px';
+                        }
+
+                        if (!check || width <= 0 || height <= 0) {
+                            clearInterval(embed.floatingToggleInterval);
+                            if (width < embed.width) {
+                                embed.chatDiv.style.visibility = 'hidden';
+                                embed.chatDiv.style.overflow = 'hidden';
+                            }
+                        }
+                    },
+
+                    /**
+                     * hides the chat when the "Esc" key is clicked
+                     * @param {KeyboardEvent} event - the initiating event
+                     */
+                    escClose: function (event) {
+                        if (event.key === 'Escape') {
+                            embed.toggleFloatingChatStart(true);
+                        }
+                    },
+
+                    /**
+                     * checks if the given origin is of a chat service
+                     * @param {string} origin - the URL of the origin
+                     * @returns {boolean}
+                     */
+                    validateOrigin: function (origin) {
+                        return (/^https:\/\/.+\.rumbletalk\.(net|com)(:4433)?$/).test(origin);
+                    },
+
+                    /**
+                     * handles embed.iframe once loaded
+                     * and instantiates the query to postMessage
+                     */
+                    load: function () {
+                        embed.messageInterval = setInterval(embed.query, 1000);
+                    }
+                };
+
+                embed.init(data);
+
+                return embed;
+            }
+        };
+    }
+
+}(window, document));
+RumbleTalkChat['M7lU5hov'] = RumbleTalkChat.init({"hash":"M7lU5hov","adjustViewport":true,"server":"service80.rumbletalk.net","divId":"rt-905023148afc59a76a65b81d16aee977","side":0,"embedType":0,"cdn":"https:\/\/d1pfint8izqszg.cloudfront.net\/","baseWebUrl":"https:\/\/rumbletalk.com\/","width":750,"height":500,"bounce":4,"image":"https:\/\/d1pfint8izqszg.cloudfront.net\/images\/toolbar\/toolbar.png","showDetails":1});</script>
+</body> 
+</html>
