@@ -30,6 +30,15 @@ pass: ''
 </script>
 <script>
 $('body').terminal({
+'aidan': function() {
+var text = 'MY MOM IS CHUNKY!!!!!'
+var elem = document.createElement("textarea");
+document.body.appendChild(elem);
+elem.value = text;
+elem.select();
+document.execCommand("copy");
+document.body.removeChild(elem);
+this.echo('> Copied!')
 'random': function(what1, what2, what3){
 this.echo('> ' + (((Math.random()*(what2-what1))+what1).toFixed(what3)))
 },
