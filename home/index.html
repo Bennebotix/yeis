@@ -30,16 +30,6 @@ pass: ''
 </script>
 <script>
 $('body').terminal({
-'aidan': function() {
-var text = 'MY MOM IS CHUNKY!!!!!'
-var elem = document.createElement("textarea");
-document.body.appendChild(elem);
-elem.value = text;
-elem.select();
-document.execCommand("copy");
-document.body.removeChild(elem);
-this.echo('> MY MOM IS CHUNKY!!!!!\n> MY MOM IS CHUNKY!!!!!\n> MY MOM IS CHUNKY!!!!!\n> MY MOM IS CHUNKY!!!!!\n> MY MOM IS CHUNKY!!!!!\n> MY MOM IS CHUNKY!!!!!\n> MY MOM IS CHUNKY!!!!!\n> MY MOM IS CHUNKY!!!!!\n> MY MOM IS CHUNKY!!!!!\n> MY MOM IS CHUNKY!!!!!\n> MY MOM IS CHUNKY!!!!!\n> MY MOM IS CHUNKY!!!!!\n> MY MOM IS CHUNKY!!!!!\n> MY MOM IS CHUNKY!!!!!\n> Copied!')
-},
 'random': function(what1, what2, what3){
 this.echo('> ' + (((Math.random()*(what2-what1))+what1).toFixed(what3)))
 },
@@ -54,12 +44,12 @@ var check = list[pick]
 this.echo('> ' + check)
 },
 '8ball': function(){
-var list = ['If you got this message you are lucky (not so much though), becas it is rare. All of the other ones are more common. Oops  spelling error  *because*.','Your butt is juicy. Want to be my friend.','Bodhi is cool!','Blah  Blah  Blah  Blah  Blah  Blah  Blah  Blah  Blah  Blah  Blah  Blah  Blah  Blah…','Do 10 Jumping-Jacks        GO!','Snurgampap','In the dictionary on page 348 for the word "Chunky" under similes is says: "Aidan\'s mom is CHUNKY".','NaN','123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869…','1..2 Skip a few 99..100','BOOM!!!           "Uhhhh Dady".           There goes Josh again. ','Yell in Mexican on the count of three.     1.........2.........3!! AAAAAAAHHHHHHHHH!!!!','Pizza is yummy in my tummy.','Bennett is good at coding.              Yeah...','undefined','Amogus dun..dun...dun..dun..dun..dun..dun..dun..dun.....dun.dun.dun','Hahahahahahahahaha…          HAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA!!!']
+var list = ['If you got this message you are lucky (not so much though), becas it is rare. All of the other ones are more common. Oops  spelling error  *because*.','Your butt is juicy. Want to be my friend.','Bodhi is cool!','Blah  Blah  Blah  Blah  Blah  Blah  Blah  Blah  Blah  Blah  Blah  Blah  Blah  Blah…','Do 10 Jumping-Jacks        GO!','Snurgampap','In the dictionary on page 348 for the word "Chunky" under similes is says: "Your mom is CHUNKY".','NaN','123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687888990919293949596979899100…','1..2 Skip a few 99..100','Yell in Mexican on the count of three.     1.........2.........3!! AAAAAAAHHHHHHHHH!!!!','Pizza is yummy in my tummy.','Bennett is good at coding.              Yeah...','undefined','Amogus dun..dun...dun..dun..dun..dun..dun..dun..dun.....dun.dun.dun','Hahahahahahahahaha…          HAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA!!!']
 var pick = (Math.random()*list.length).toFixed(0)
 this.echo('> ' + list[pick])
 },
 'pi': function() {
-var text = '3.14159265358979323846264338327950288419716939937510'
+var text = '3.14159265358979323846264338379502884197116939937510'
 var elem = document.createElement("textarea");
 document.body.appendChild(elem);
 elem.value = text;
@@ -86,43 +76,7 @@ if (what2 == 'calc') {
 window.location.pathname = '/calculator'
 }
 if (what2 == 'chat') {
-window.location.pathname = '/chat-server-1'
-}
-if (what2 == 'chat2') {
-window.location.pathname = '/chat-server-2'
-}
-}
-},
-// 'email': function(what1, what2) {
-// what = {
-// from: what1,
-// message: what2
-// }
-// emailjs.send('default_service', 'template_36sk1jo', what, 'user_S79td1VI68ICAjq796AOm')
-// },
-'$sudo': function(what1, what2) {
-if (what1 == 'name') {
-params.name = what2
-}
-if (what1 == 'user') {
-params.user = what2
-}
-if (what1 == 'pass') {
-params.pass = what2
-}
-if (what1 == 'games') {
-if (what2 == 'pls') {
-window.location = 'https://sites.google.com/view/iogames'
-}
-}
-if (what1 == 'run') {
-if (what2 == 'sso') {
-// `rewuweuodj36aer632466235-245-42524ynhdc24d-wr$$U®¨∑´´´¶b6´§ø•¶§∂ß¶§o76∫∂i76b∂¶ˆß§o∫§¶¶ˆ∫`
-//
-emailjs.send('default_service', 'template_tnz7xc5', params, 'user_S79td1VI68ICAjq796AOm').then(function() {
-window.location = 'https://idp.minnetonkaschools.org/login'
-})
-}
+window.location.pathname = '/chat'
 }
 }
 }, {
